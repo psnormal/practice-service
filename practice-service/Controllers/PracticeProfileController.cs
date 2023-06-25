@@ -83,6 +83,25 @@ namespace practice_service.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("user/{id}/practicePeriods")]
+        public ActionResult<PracticePeriodsAndStudentPracticeProfilesListDto> GetStudentPracticeProfilesAndPeriodsNames(Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                return _practiceProfileService.GetStudentPracticeProfilesAndPeriodsNames(id);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something went wrong");
+            }
+        }
+
         [HttpPut]
         [Route("practiceProfile/edit/{id}")]
         public async Task<ActionResult<PracticeProfilePageDto>> EditPracticeProfile(Guid id, PracticeProfileUpdateDto model)

@@ -64,6 +64,24 @@ namespace practice_service.Services
             return result;
         }
 
+        public PracticePeriodsAndStudentPracticeProfilesListDto GetStudentPracticeProfilesAndPeriodsNames(Guid id)
+        {
+            List<PracticeProfile> profiles = _context.PracticeProfiles.Where(p => p.UserId == id).ToList();
+            List<PracticePeriodAndStudentPracticeProfileDto> practiceProfiles = new List<PracticePeriodAndStudentPracticeProfileDto>();
+            foreach (var profile in profiles)
+            {
+                PracticePeriod period = _context.PracticePeriods.FirstOrDefault(p => p.Id == profile.PracticePeriodId);
+                PracticePeriodAndStudentPracticeProfileDto newProfile = new PracticePeriodAndStudentPracticeProfileDto
+                {
+                    PracticeProfileId = profile.PracticeProfileId,
+                    PracticePeriodName = period.PracticePeriodName.ToString()
+                };
+                practiceProfiles.Add(newProfile);
+            }
+            PracticePeriodsAndStudentPracticeProfilesListDto result = new PracticePeriodsAndStudentPracticeProfilesListDto(practiceProfiles);
+            return result;
+        }
+
         public async Task EditPracticeProfiles(Guid id, PracticeProfileUpdateDto model)
         {
             var practiceProfile = _context.PracticeProfiles.FirstOrDefault(p => p.PracticeProfileId == id);
