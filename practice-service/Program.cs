@@ -1,6 +1,7 @@
 using practice_service.Services;
 using practice_service;
 using Microsoft.EntityFrameworkCore;
+using practice_service.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPracticePeriodService, PracticePeriodService>();
 builder.Services.AddScoped<IPracticeProfileService, PracticeProfileService>();
+builder.Services.AddScoped<IWorkPlaceInfoService, WorkPlaceInfoService>();
 
 //DB connection:
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");

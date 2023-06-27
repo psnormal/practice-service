@@ -66,7 +66,7 @@ namespace practice_service.Controllers
 
         [HttpGet]
         [Route("user/{id}/practiceProfiles")]
-        public ActionResult<StudentPracticeProfiles> GetStudentPracticeProfiles(Guid id)
+        public ActionResult<StudentPracticeProfilesDto> GetStudentPracticeProfiles(Guid id)
         {
             if (!ModelState.IsValid)
             {

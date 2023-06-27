@@ -51,7 +51,7 @@ namespace practice_service.Services
             return result;
         }
 
-        public StudentPracticeProfiles GetStudentPracticeProfiles(Guid id)
+        public StudentPracticeProfilesDto GetStudentPracticeProfiles(Guid id)
         {
             List<PracticeProfile> profiles = _context.PracticeProfiles.Where(p => p.UserId == id).ToList();
             List<PracticeProfilePageDto> practiceProfiles = new List<PracticeProfilePageDto>();
@@ -60,7 +60,7 @@ namespace practice_service.Services
                 PracticeProfilePageDto newProfile = new PracticeProfilePageDto(profile);
                 practiceProfiles.Add(newProfile);
             }
-            StudentPracticeProfiles result = new StudentPracticeProfiles(practiceProfiles);
+            StudentPracticeProfilesDto result = new StudentPracticeProfilesDto(practiceProfiles);
             return result;
         }
 

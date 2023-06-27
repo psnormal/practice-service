@@ -6,7 +6,7 @@ namespace practice_service.Services
     {
         Task<Guid> CreatePracticeProfile(PracticeProfileCreateDto model);
         PracticeProfilePageDto GetPracticeProfileById(Guid id);
-        StudentPracticeProfiles GetStudentPracticeProfiles(Guid id);
+        StudentPracticeProfilesDto GetStudentPracticeProfiles(Guid id);
         PracticePeriodsAndStudentPracticeProfilesListDto GetStudentPracticeProfilesAndPeriodsNames(Guid id);
         Task EditPracticeProfiles(Guid id, PracticeProfileUpdateDto model);
         Task DeletePracticeProfile(Guid id);

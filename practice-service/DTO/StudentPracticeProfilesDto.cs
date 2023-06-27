@@ -2,12 +2,12 @@
 
 namespace practice_service.DTO
 {
-    public class StudentPracticeProfiles
+    public class StudentPracticeProfilesDto
     {
         [Required]
         public List<PracticeProfilePageDto> PracticeProfiles { get; set; }
 
-        public StudentPracticeProfiles(List<PracticeProfilePageDto> practiceProfiles)
+        public StudentPracticeProfilesDto(List<PracticeProfilePageDto> practiceProfiles)
         {
             PracticeProfiles = practiceProfiles;
         }
