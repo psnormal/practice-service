@@ -74,7 +74,9 @@ namespace practice_service.Services
                 PracticePeriodAndStudentPracticeProfileDto newProfile = new PracticePeriodAndStudentPracticeProfileDto
                 {
                     PracticeProfileId = profile.PracticeProfileId,
-                    PracticePeriodName = period.PracticePeriodName.ToString()
+                    PracticePeriodName = period.PracticePeriodName.ToString(),
+                    StartDate = period.StartDate,
+                    EndDate = period.EndDate
                 };
                 practiceProfiles.Add(newProfile);
             }

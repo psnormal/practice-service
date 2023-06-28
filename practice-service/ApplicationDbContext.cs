@@ -9,6 +9,7 @@ namespace practice_service
         public DbSet<PracticeProfile> PracticeProfiles { get; set; }
         public DbSet<PracticePeriod> PracticePeriods { get; set; }
         public DbSet<WorkPlaceInfo> WorkPlaceInfos { get; set; }
+        public DbSet<PeriodsAndGroups> PeriodsAndGroups { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

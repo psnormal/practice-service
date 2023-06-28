@@ -15,5 +15,6 @@ namespace practice_service.Models
         public string PracticeOrder { get; set; }
         [Required]
         public string PracticePeriodName { get; set; }
+        public List<string> Groups { get; set; }
     }
 }

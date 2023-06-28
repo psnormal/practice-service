@@ -12,5 +12,6 @@ namespace practice_service.DTO
         public string PracticeOrder { get; set; }
         [Required]
         public string PracticePeriodName { get; set; }
+        public List<GroupDto> Groups { get; set; }
     }
 }
