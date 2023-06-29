@@ -26,6 +26,21 @@ namespace practice_service.Services
             await _context.PracticePeriods.AddAsync(newPracticePeriod);
             await _context.SaveChangesAsync();
 
+            foreach (GroupDto group in model.Groups)
+            {
+                var info = _context.PeriodsAndGroups.FirstOrDefault(p => p.PracticePeriodId == newPracticePeriod.Id && p.GroupNumber == group.GroupNumber);
+                if (info == null)
+                {
+                    PeriodsAndGroups periodAndGroup = new PeriodsAndGroups
+                    {
+                        PracticePeriodId = newPracticePeriod.Id,
+                        GroupNumber = group.GroupNumber
+                    };
+                    await _context.PeriodsAndGroups.AddAsync(periodAndGroup);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             return newPracticePeriod.Id;
         }
 
@@ -38,13 +53,25 @@ namespace practice_service.Services
                 throw new ValidationException("This practice period does not exist");
             }
 
+            List<GroupDto> groups = new List<GroupDto>();
+            List<PeriodsAndGroups> periodsAndGroups = _context.PeriodsAndGroups.Where(p => p.PracticePeriodId == id).ToList();
+            foreach (var group in periodsAndGroups)
+            {
+                GroupDto groupDto = new GroupDto
+                {
+                    GroupNumber = group.GroupNumber
+                };
+                groups.Add(groupDto);
+            }
+
             PracticePeriodPageDto result = new PracticePeriodPageDto
             {
                 Id = id,
                 StartDate = practicePeriod.StartDate,
                 EndDate = practicePeriod.EndDate,
                 PracticeOrder = practicePeriod.PracticeOrder,
-                PracticePeriodName = practicePeriod.PracticePeriodName
+                PracticePeriodName = practicePeriod.PracticePeriodName,
+                Groups = groups
             };
 
             return result;
@@ -82,6 +109,21 @@ namespace practice_service.Services
             practicePeriod.PracticeOrder = model.PracticeOrder;
 
             await _context.SaveChangesAsync();
+
+            foreach (GroupDto group in model.Groups)
+            {
+                var info = _context.PeriodsAndGroups.FirstOrDefault(p => p.PracticePeriodId == id && p.GroupNumber == group.GroupNumber);
+                if (info == null)
+                {
+                    PeriodsAndGroups periodAndGroup = new PeriodsAndGroups
+                    {
+                        PracticePeriodId = id,
+                        GroupNumber = group.GroupNumber
+                    };
+                    await _context.PeriodsAndGroups.AddAsync(periodAndGroup);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
 
         public async Task DeletePracticePeriod(Guid id)
