@@ -13,9 +13,7 @@ namespace practice_service.Models
         public int CompanyId { get; set; }
         [Required]
         public string Position { get; set; }
-        [Required]
         public string Characteristic { get; set; }
-        [Required]
         public string PracticeDiary { get; set; }
         [Required]
         public Guid PracticePeriodId { get; set; }

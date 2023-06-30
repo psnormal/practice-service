@@ -72,6 +72,33 @@ namespace practice_service.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("practicePeriod/{id}/students")]
+        public async Task<ActionResult<StudentsInPeriodInfoDto>> GetStudentsInPeriod([FromHeader(Name = "Authorization")] string Authorization,  Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                return await _practicePeriodService.GetStudentsInPeriod(Authorization, id);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "This practice period does not exist")
+                {
+                    return StatusCode(400, ex.Message);
+                }
+                if (ex.Message == "This info does not exist")
+                {
+                    return StatusCode(400, ex.Message);
+                }
+                return StatusCode(500, "Something went wrong");
+            }
+        }
+
         [HttpPut]
         [Route("practicePeriod/edit/{id}")]
         public async Task<ActionResult<PracticePeriodPageDto>> EditPracticePeriod(Guid id, PracticePeriodCreateUpdateDto model)

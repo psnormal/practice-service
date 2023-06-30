@@ -68,6 +68,12 @@ namespace practice_service.Services
             }
         }
 
+        public List<WorkPlaceInfo> GetAllWorkPlaceInfosByCompany(int companyId)
+        {
+            List<WorkPlaceInfo> result = _context.WorkPlaceInfos.Where(p => p.CompanyId == companyId).ToList();
+            return result;
+        }
+
         public async Task DeleteWorkPlaceInfo(Guid id)
         {
             var userInfo = _context.WorkPlaceInfos.FirstOrDefault(p => p.UserId == id);

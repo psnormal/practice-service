@@ -1,4 +1,5 @@
-﻿using practice_service.DTO;
+﻿using Newtonsoft.Json;
+using practice_service.DTO;
 using practice_service.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -91,6 +92,51 @@ namespace practice_service.Services
                 practicePeriodInfos.Add(newPeriod);
             }
             PracticePeriodsDto result = new PracticePeriodsDto(practicePeriodInfos);
+            return result;
+        }
+
+        public async Task<StudentsInPeriodInfoDto> GetStudentsInPeriod(string token, Guid id)
+        {
+            var practicePeriod = _context.PracticePeriods.FirstOrDefault(p => p.Id == id);
+
+            if (practicePeriod == null)
+            {
+                throw new ValidationException("This practice period does not exist");
+            }
+
+            List<PracticeProfile> profilesInPeriod = _context.PracticeProfiles.Where(p => p.PracticePeriodId == id).ToList();
+            List<StudentInPeriodInfoDto> studentsProfiles = new List<StudentInPeriodInfoDto>();
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", token);
+
+            foreach (var profile in profilesInPeriod)
+            {
+                var url2 = "https://hits-user-service.onrender.com/api/users/id/" + profile.UserId;
+                var response2 = await client.GetAsync(url2);
+                UserDto user = new UserDto();
+                if (response2.IsSuccessStatusCode)
+                {
+                    var jsonString2 = await response2.Content.ReadAsStringAsync();
+                    user = JsonConvert.DeserializeObject<UserDto>(jsonString2);
+                }
+                else
+                {
+                    throw new ValidationException("This info does not exist");
+                }
+
+                StudentInPeriodInfoDto studentProfile = new StudentInPeriodInfoDto
+                {
+                    PracticeProfileId = profile.PracticeProfileId,
+                    firstName = user.firstName,
+                    lastName = user.lastName,
+                    patronym = user.patronym,
+                    groupNumber = user.groupNumber,
+                    userId = user.userId
+                };
+                studentsProfiles.Add(studentProfile);
+            }
+            StudentsInPeriodInfoDto result = new StudentsInPeriodInfoDto(studentsProfiles);
             return result;
         }
 

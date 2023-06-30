@@ -32,7 +32,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000", "https://hits-user-service.onrender.com", "https://hits-application-service.onrender.com").AllowCredentials());
+app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000", "https://hits-user-service.onrender.com", "https://hits-application-service.onrender.com", "https://company-service-6bc8.onrender.com").AllowCredentials());
 
 app.UseAuthorization();
 

@@ -7,6 +7,7 @@ namespace practice_service.Services
         Task<Guid> CreatePracticePeriod(PracticePeriodCreateUpdateDto model);
         PracticePeriodPageDto GetPracticePeriodById(Guid id);
         PracticePeriodsDto GetPracticePeriods();
+        Task<StudentsInPeriodInfoDto> GetStudentsInPeriod(string token, Guid id);
         Task EditPracticePeriod(Guid id, PracticePeriodCreateUpdateDto model);
         Task DeletePracticePeriod(Guid id);
     }

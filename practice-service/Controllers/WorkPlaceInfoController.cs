@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using practice_service.DTO;
+using practice_service.Models;
 using practice_service.Services;
 
 namespace practice_service.Controllers
@@ -47,6 +48,29 @@ namespace practice_service.Controllers
             try
             {
                 return await _workPlaceInfoService.GetWorkPlaceInfo(id);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "This info does not exist")
+                {
+                    return StatusCode(400, ex.Message);
+                }
+                return StatusCode(500, "Something went wrong");
+            }
+        }
+
+        [HttpGet]
+        [Route("company/{id}/workPlaceInfo")]
+        public ActionResult<List<WorkPlaceInfo>> GetAllWorkPlaceInfosByCompany(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                return _workPlaceInfoService.GetAllWorkPlaceInfosByCompany(id);
             }
             catch (Exception ex)
             {
