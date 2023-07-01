@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using practice_service.DTO;
 using practice_service.Services;
+using System.Net;
 
 namespace practice_service.Controllers
 {
@@ -17,7 +18,7 @@ namespace practice_service.Controllers
 
         [HttpPost]
         [Route("practicePeriod/create")]
-        public async Task<ActionResult<PracticePeriodPageDto>> CreatePracticePeriod(PracticePeriodCreateUpdateDto model)
+        public async Task<ActionResult<PracticePeriodPageDto>> CreatePracticePeriod([FromHeader(Name = "Authorization")] string Authorization, PracticePeriodCreateUpdateDto model)
         {
             if (!ModelState.IsValid)
             {
@@ -26,11 +27,15 @@ namespace practice_service.Controllers
 
             try
             {
-                var practicePeriodId = await _practicePeriodService.CreatePracticePeriod(model);
+                var practicePeriodId = await _practicePeriodService.CreatePracticePeriod(Authorization, model);
                 return GetPracticePeriodInfo(practicePeriodId);
             }
             catch (Exception ex)
             {
+                if (ex.Message == "This info does not exist")
+                {
+                    return StatusCode(400, ex.Message);
+                }
                 return StatusCode(500, "Something went wrong");
             }
         }
@@ -101,7 +106,7 @@ namespace practice_service.Controllers
 
         [HttpPut]
         [Route("practicePeriod/edit/{id}")]
-        public async Task<ActionResult<PracticePeriodPageDto>> EditPracticePeriod(Guid id, PracticePeriodCreateUpdateDto model)
+        public async Task<ActionResult<PracticePeriodPageDto>> EditPracticePeriod([FromHeader(Name = "Authorization")] string Authorization, Guid id, PracticePeriodCreateUpdateDto model)
         {
             if (!ModelState.IsValid)
             {
@@ -110,12 +115,16 @@ namespace practice_service.Controllers
 
             try
             {
-                await _practicePeriodService.EditPracticePeriod(id, model);
+                await _practicePeriodService.EditPracticePeriod(Authorization, id, model);
                 return GetPracticePeriodInfo(id);
             }
             catch (Exception ex)
             {
                 if (ex.Message == "This practice period does not exist")
+                {
+                    return StatusCode(400, ex.Message);
+                }
+                if (ex.Message == "This info does not exist")
                 {
                     return StatusCode(400, ex.Message);
                 }

@@ -2,6 +2,8 @@
 using practice_service.DTO;
 using practice_service.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Policy;
+using System.Text.Json.Nodes;
 
 namespace practice_service.Services
 {
@@ -14,7 +16,7 @@ namespace practice_service.Services
             _context = context;
         }
 
-        public async Task<Guid> CreatePracticePeriod(PracticePeriodCreateUpdateDto model)
+        public async Task<Guid> CreatePracticePeriod(string token, PracticePeriodCreateUpdateDto model)
         {
             var newPracticePeriod = new PracticePeriod
             {
@@ -40,6 +42,7 @@ namespace practice_service.Services
                     await _context.PeriodsAndGroups.AddAsync(periodAndGroup);
                     await _context.SaveChangesAsync();
                 }
+                await CreateProfilesForGroup(token, group.GroupNumber, newPracticePeriod.Id);
             }
 
             return newPracticePeriod.Id;
@@ -140,7 +143,7 @@ namespace practice_service.Services
             return result;
         }
 
-        public async Task EditPracticePeriod(Guid id, PracticePeriodCreateUpdateDto model)
+        public async Task EditPracticePeriod(string token, Guid id, PracticePeriodCreateUpdateDto model)
         {
             var practicePeriod = _context.PracticePeriods.FirstOrDefault(p => p.Id == id);
 
@@ -169,6 +172,7 @@ namespace practice_service.Services
                     await _context.PeriodsAndGroups.AddAsync(periodAndGroup);
                     await _context.SaveChangesAsync();
                 }
+                await CreateProfilesForGroup(token, group.GroupNumber, id);
             }
         }
 
@@ -182,6 +186,61 @@ namespace practice_service.Services
             }
             _context.PracticePeriods.Remove(practicePeriod);
             await _context.SaveChangesAsync();
+        }
+
+        private async Task CreateProfilesForGroup(string token, string groupNumber, Guid practicePeriod)
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", token);
+            var url = "https://hits-user-service.onrender.com/api/groups/" + groupNumber;
+
+            var response = await client.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                
+                var users = JsonConvert.DeserializeObject<GroupAndStudentsDto>(jsonString);
+                //Console.WriteLine(users);
+                foreach (var user in users.students)
+                {
+                    WorkPlaceInfo info = _context.WorkPlaceInfos.FirstOrDefault(p => p.UserId.ToString() == user.userId);
+
+                    PracticeProfileCreateDto profile = null;
+
+                    if (info == null)
+                    {
+                        profile = new PracticeProfileCreateDto
+                        {
+                            UserId = new Guid(user.userId),
+                            PracticePeriodId = practicePeriod,
+                            CompanyId = 1,
+                            Position = "",
+                            Characteristic = "",
+                            PracticeDiary = ""
+                        };
+                    }
+                    else
+                    {
+                        profile = new PracticeProfileCreateDto
+                        {
+                            UserId = new Guid(user.userId),
+                            PracticePeriodId = practicePeriod,
+                            CompanyId = info.CompanyId,
+                            Position = info.Position,
+                            Characteristic = "",
+                            PracticeDiary = ""
+                        };
+                    }
+
+                    var url2 = "https://practice-service.onrender.com/api/practiceProfile/create";
+                    JsonContent content = JsonContent.Create(profile);
+                    var response2 = await client.PostAsync(url2, content);
+                }
+            }
+            else
+            {
+                throw new ValidationException("This info does not exist");
+            }
         }
     }
 }

@@ -4,11 +4,11 @@ namespace practice_service.Services
 {
     public interface IPracticePeriodService
     {
-        Task<Guid> CreatePracticePeriod(PracticePeriodCreateUpdateDto model);
+        Task<Guid> CreatePracticePeriod(string token, PracticePeriodCreateUpdateDto model);
         PracticePeriodPageDto GetPracticePeriodById(Guid id);
         PracticePeriodsDto GetPracticePeriods();
         Task<StudentsInPeriodInfoDto> GetStudentsInPeriod(string token, Guid id);
-        Task EditPracticePeriod(Guid id, PracticePeriodCreateUpdateDto model);
+        Task EditPracticePeriod(string token, Guid id, PracticePeriodCreateUpdateDto model);
         Task DeletePracticePeriod(Guid id);
     }
 }
