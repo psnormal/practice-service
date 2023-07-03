@@ -41,8 +41,9 @@ namespace practice_service.Services
                     };
                     await _context.PeriodsAndGroups.AddAsync(periodAndGroup);
                     await _context.SaveChangesAsync();
+
+                    await CreateProfilesForGroup(token, group.GroupNumber, newPracticePeriod.Id);
                 }
-                await CreateProfilesForGroup(token, group.GroupNumber, newPracticePeriod.Id);
             }
 
             return newPracticePeriod.Id;
@@ -171,8 +172,9 @@ namespace practice_service.Services
                     };
                     await _context.PeriodsAndGroups.AddAsync(periodAndGroup);
                     await _context.SaveChangesAsync();
+
+                    await CreateProfilesForGroup(token, group.GroupNumber, id);
                 }
-                await CreateProfilesForGroup(token, group.GroupNumber, id);
             }
         }
 
